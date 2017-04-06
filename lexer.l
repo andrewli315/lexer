@@ -1,0 +1,243 @@
+/*
+	Topic: Homework1 for Compiler Course
+	Deadline: xxx.xx.xxxx
+*/
+
+%{
+
+/*	Definition section */
+
+/*	insert the C library and variables you need */
+
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include <ctype.h>
+
+/*
+	Symbol table function
+
+	TAs create the basic function which you have to fill.
+	We encourage you define new function to make the program work better.
+	However, the four basic functions must be finished.
+*/
+	typedef struct SYMBOL_TABLE{
+		int index;
+		char id[100];
+		char type[10];
+		struct SYMBOL_TABLE* next;
+	}symbol_table;
+	void create_symbol();
+	void insert_symbol();
+	int lookup_symbol();
+	void dump_symbol();
+	void insert_node(symbol_table*);
+	void count_line();
+	symbol_table* recent_node();
+	symbol_table* create_node(char*,char*);
+	int linenum = 0;
+
+	symbol_table *root;
+	int node_index = 0;
+	int line =0;
+
+%}
+
+/*	define regular expression label */
+
+letter [a-zA-Z]
+digit [0-9]
+id {letter}+({letter}|{digit})*
+
+str  quot+[^quot]+quot
+type_int [iI][nN][tT]+{ws}
+type_double [dD][oO][uU][bB][lL][eE]+{ws}
+func_print [pP][rR][iI][nN][tT]
+ws 	 [ \t]
+%%
+
+ /*	Rules section */
+{type_int}+{id}		{create_symbol();}
+{type_double}+{id}	{create_symbol();}
+";" 				{printf("%s \t SEMICOLON \n",yytext); }
+{func_print}			{printf("%s \t PRINT FUNCTION \n",yytext);	/* C action code */	;}
+"=" 				{printf("%s \t ASSIGN \n",yytext);}
+"+" 				{printf("%s \t OPERATOR \n",yytext);}
+"-" 				{printf("%s \t OPERATOR \n",yytext);}
+"*" 				{printf("%s \t OPERATOR \n",yytext);}
+"/" 				{printf("%s \t OPERATOR \n",yytext);}
+"("					{printf("%s \t LB \n",yytext);}
+")"					{printf("%s \t RB \n",yytext);}
+">"					{printf("%s \t RELATIONAL \n",yytext);}
+"<"					{printf("%s \t RELATIONAL \n",yytext);}
+"<="				{printf("%s \t RELATIONAL \n",yytext);}
+">="				{printf("%s \t RELATIONAL \n",yytext);}
+"!="				{printf("%s \t RELATIONAL \n",yytext);}
+"=="				{printf("%s \t RELATIONAL \n",yytext);}
+"while"				{printf("%s \t WHILE FUNCTION \n",yytext);}
+"if"				{printf("%s \t IF \n",yytext);}
+"else"				{printf("%s \t ELSE \n",yytext);}
+","					{printf("%s \t COMMA \n",yytext);}
+"{"					{printf("%s \t LCB \n",yytext);}
+"}"					{printf("%s \t RCB \n",yytext);}
+"\""				{printf("%s \t QUOTATION \n",yytext);}
+"\'"				{printf("%s \t QUOTATION \n",yytext);}
+"^"					{printf("%s \t EXPONETNTIAL \n",yytext);}
+"\""+[.^"\""]*+"\"" 	{printf("%s \t STRING \n",yytext); }
+
+"/*"	    {//
+				char c;
+				for ( ; ; )
+				{
+					//do nothing
+					while ( (c = input()) != '*' &&	c != EOF );
+					if ( c == '*' )
+					{
+
+						while ( (c = input()) == '*' );
+						if ( c == '/' )
+						break;
+					}
+					if ( c == EOF )
+					{
+						printf( "EOF in comment" );
+						break;
+					}
+				}
+			}
+"//"			{
+			    	char c;
+
+			    	for ( ; ; )
+			    	{
+						while ( (c = input()) != '\n' && c != EOF )
+				    	;	   /* eat up text of comment */
+						if(c == '\n')
+							break;
+						if ( c == EOF )
+						{
+							printf( "EOF in comment" );
+							break;
+						}
+					}
+			    }
+
+{id} 				{printf("%s \t ID \n",yytext); }
+{digit}+			{printf("%s \t NUMBER \n",yytext);}
+{digit}+"."+{digit}	{printf("%s \t FLOATNUMBER \n",yytext);}
+[\n]				{count_line();}
+{ws}				{;}
+
+%%
+
+/*	C Code section */
+
+/*	You have to define your C function in this section */
+
+int main(int argc,char *argv[]){
+	
+	root = create_node("","");
+
+	yyin = fopen(argv[1],"r");
+	yylex();
+
+	printf("\nParse over, the line number is %d\n", line);
+	dump_symbol();
+
+	return 0;
+}
+
+int yywrap(void) {
+    return 1;
+}
+
+void create_symbol(){
+	symbol_table* node;
+	char pch[100];
+	char type[100];
+	char* temp;
+	temp = strtok(yytext," ");
+	strcpy(type,temp);
+	//printf("type \t%s \n",temp);
+	while(temp != NULL)
+	{
+		temp = strtok (NULL," ");
+		strcpy(pch,temp);
+		break;
+	}
+	node = create_node(type,pch);
+	printf("%s \t %s TYPE VAR\n", pch,type );
+	printf("Create a symbol table\n");
+	insert_symbol(pch,node);
+
+
+
+}
+
+void insert_symbol(char* s,symbol_table* node){
+	
+	
+	printf("Insert a symbol:%s\n",s);
+	insert_node(node);
+
+}
+
+int lookup_symbol(char* sym){
+	symbol_table* temp;
+	temp = root;
+	while(temp->next != NULL)
+	{
+		if(strcmp(temp->id,sym) == 0 )
+		{
+			printf("index : \t %d\n", temp->index);
+			printf("id    : \t %s\n", temp->id);
+			printf("type  : \t %s\n", temp->type);
+			break;
+
+		}
+		temp = temp->next;	
+
+	}
+	return temp->index;
+}
+
+void dump_symbol(){
+	printf("\nThe symbol table dump:\n");
+	symbol_table* temp;
+	temp = root->next;
+	while(temp != NULL)
+	{
+		printf("%d \t %s \t %s\n", temp->index,temp->id,temp->type);
+		temp = temp->next;	
+	}
+
+}
+symbol_table* create_node(char* type, char* id)
+{
+	symbol_table* new = (symbol_table*)malloc(sizeof(symbol_table));
+	strcpy(new->id,id);
+	strcpy(new->type,type);
+	new->index = node_index;
+	new->next = NULL;
+	node_index++;
+	return new;
+}
+void insert_node(symbol_table* node)
+{
+	symbol_table* temp;
+	temp = recent_node();
+	node->next = temp->next;
+	temp->next = node;
+}
+symbol_table* recent_node()
+{
+	symbol_table* temp;
+	temp = root;
+	while(temp->next != NULL)
+		temp = temp->next;
+	return temp;
+}
+void count_line()
+{
+	line++;
+}
