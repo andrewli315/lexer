@@ -49,49 +49,49 @@
 %}
 
 /*	define regular expression label */
-letter 		[a-zA-Z]
-digit 		[0-9]
+letter 			[a-zA-Z]
+digit 			[0-9]
 id 			{letter}+({letter}|{digit})*
-type_int	[iI][nN][tT]+{ws}
-type_double [dD][oO][uU][bB][lL][eE]+{ws}
-func_print	[pP][rR][iI][nN][tT]
-w_while 	[wW][hH][iI][lL][eE]
-w_if 		[iI][fF]
-w_else 		[eE][lL][sS][eE]
+type_int		[iI][nN][tT]+{ws}
+type_double 		[dD][oO][uU][bB][lL][eE]+{ws}
+func_print		[pP][rR][iI][nN][tT]
+w_while 		[wW][hH][iI][lL][eE]
+w_if 			[iI][fF]
+w_else 			[eE][lL][sS][eE]
 ws 	 		[ \t]
 
 %%
 
  /*	Rules section */
-{type_int}+{id}			{create_symbol();}
-{type_double}+{id}		{create_symbol();}
-{func_print}			{printf("%s \t PRINT FUNCTION \n",yytext);	/* C action code */	;}
-{w_while}				{printf("%s \t WHILE FUNCTION \n",yytext);}
-{w_if}					{printf("%s \t IF \n",yytext);}
-{w_else}				{printf("%s \t ELSE \n",yytext);}
-"=" 					{printf("%s \t ASSIGN \n",yytext);}
-"+" 					{printf("%s \t OPERATOR \n",yytext);}
-"-" 					{printf("%s \t OPERATOR \n",yytext);}
-"*" 					{printf("%s \t OPERATOR \n",yytext);}
-"/" 					{printf("%s \t OPERATOR \n",yytext);}
-"("						{printf("%s \t LB \n",yytext);}
-")"						{printf("%s \t RB \n",yytext);}
-">"						{printf("%s \t RELATIONAL \n",yytext);}
-"<"						{printf("%s \t RELATIONAL \n",yytext);}
-"<="					{printf("%s \t RELATIONAL \n",yytext);}
-">="					{printf("%s \t RELATIONAL \n",yytext);}
-"!="					{printf("%s \t RELATIONAL \n",yytext);}
-"=="					{printf("%s \t RELATIONAL \n",yytext);}
-";" 					{printf("%s \t SEMICOLON \n",yytext); }
-","						{printf("%s \t COMMA \n",yytext);}
-"{"						{printf("%s \t LCB \n",yytext);}
-"}"						{printf("%s \t RCB \n",yytext);}
-"\""					{printf("%s \t QUOTATION \n",yytext);}
-"\'"					{printf("%s \t QUOTATION \n",yytext);}
-"^"						{printf("%s \t EXPONETNTIAL \n",yytext);}
-"\""+[.^"\""]*+"\"" 	{printf("%s \t STRING \n",yytext); }
+{type_int}+{id}				{create_symbol();}
+{type_double}+{id}			{create_symbol();}
+{func_print}				{printf("%s \t PRINT FUNCTION \n",yytext);	/* C action code */	;}
+{w_while}					{printf("%s \t WHILE FUNCTION \n",yytext);}
+{w_if}						{printf("%s \t IF \n",yytext);}
+{w_else}					{printf("%s \t ELSE \n",yytext);}
+"=" 						{printf("%s \t ASSIGN \n",yytext);}
+"+" 						{printf("%s \t OPERATOR \n",yytext);}
+"-" 						{printf("%s \t OPERATOR \n",yytext);}
+"*" 						{printf("%s \t OPERATOR \n",yytext);}
+"/" 						{printf("%s \t OPERATOR \n",yytext);}
+"("							{printf("%s \t LB \n",yytext);}
+")"							{printf("%s \t RB \n",yytext);}
+">"							{printf("%s \t RELATIONAL \n",yytext);}
+"<"							{printf("%s \t RELATIONAL \n",yytext);}
+"<="						{printf("%s \t RELATIONAL \n",yytext);}
+">="						{printf("%s \t RELATIONAL \n",yytext);}
+"!="						{printf("%s \t RELATIONAL \n",yytext);}
+"=="						{printf("%s \t RELATIONAL \n",yytext);}
+";" 						{printf("%s \t SEMICOLON \n",yytext); }
+","							{printf("%s \t COMMA \n",yytext);}
+"{"							{printf("%s \t LCB \n",yytext);}
+"}"							{printf("%s \t RCB \n",yytext);}
+"\""						{printf("%s \t QUOTATION \n",yytext);}
+"\'"						{printf("%s \t QUOTATION \n",yytext);}
+"^"							{printf("%s \t EXPONETNTIAL \n",yytext);}
+"\""+[.^"\""]*+"\"" 		{printf("%s \t STRING \n",yytext); }
 
-"/*"		    {
+"/*"			{
 					char c;
 					for ( ; ; )
 					{
@@ -99,7 +99,6 @@ ws 	 		[ \t]
 						while ( (c = input()) != '*' &&	c != EOF );
 						if ( c == '*' )
 						{
-
 							while ( (c = input()) == '*' );
 							if ( c == '/' )
 							break;
@@ -112,17 +111,17 @@ ws 	 		[ \t]
 					}
 				}
 "//"			{
-				char c;
-		    	while(c != '\n')
-		    	{
-					while ( (c = input()) != '\n' && c != EOF );
-					if ( c == EOF )
-					{
-						printf( "EOF in comment" );
-						break;
+					char c;
+		    		while(c != '\n')
+		    		{
+						while ( (c = input()) != '\n' && c != EOF );
+						if ( c == EOF )
+						{
+							printf( "EOF in comment" );
+							break;
+						}
 					}
-				}
-		    }
+		    	}
 
 {id} 					{printf("%s \t ID \n",yytext); }
 {digit}+				{printf("%s \t NUMBER \n",yytext);}
