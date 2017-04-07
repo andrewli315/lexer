@@ -60,7 +60,7 @@ ws 	 [ \t]
 {type_int}+{id}		{create_symbol();}
 {type_double}+{id}	{create_symbol();}
 ";" 				{printf("%s \t SEMICOLON \n",yytext); }
-{func_print}			{printf("%s \t PRINT FUNCTION \n",yytext);	/* C action code */	;}
+{func_print}		{printf("%s \t PRINT FUNCTION \n",yytext);	/* C action code */	;}
 "=" 				{printf("%s \t ASSIGN \n",yytext);}
 "+" 				{printf("%s \t OPERATOR \n",yytext);}
 "-" 				{printf("%s \t OPERATOR \n",yytext);}
