@@ -83,7 +83,7 @@ ws 	 [ \t]
 "\""				{printf("%s \t QUOTATION \n",yytext);}
 "\'"				{printf("%s \t QUOTATION \n",yytext);}
 "^"					{printf("%s \t EXPONETNTIAL \n",yytext);}
-"\""+[.^"\""]*+"\"" 	{printf("%s \t STRING \n",yytext); }
+"\""+[^"\""]*+"\"" 	{printf("%s \t STRING \n",yytext); }
 
 "/*"	    {//
 				char c;
@@ -168,14 +168,9 @@ void create_symbol(){
 	printf("%s \t %s TYPE VAR\n", pch,type );
 	printf("Create a symbol table\n");
 	insert_symbol(pch,node);
-
-
-
 }
 
 void insert_symbol(char* s,symbol_table* node){
-	
-	
 	printf("Insert a symbol:%s\n",s);
 	insert_node(node);
 
@@ -191,13 +186,12 @@ int lookup_symbol(char* sym){
 			printf("index : \t %d\n", temp->index);
 			printf("id    : \t %s\n", temp->id);
 			printf("type  : \t %s\n", temp->type);
-			break;
-
+			return temp->index;
 		}
 		temp = temp->next;	
-
 	}
-	return temp->index;
+	printf("There is no such symbol\n");
+	return -1;	
 }
 
 void dump_symbol(){

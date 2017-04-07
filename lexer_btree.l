@@ -51,14 +51,14 @@
 /*	define regular expression label */
 letter 			[a-zA-Z]
 digit 			[0-9]
-id 			{letter}+({letter}|{digit})*
+id 				{letter}+({letter}|{digit})*
 type_int		[iI][nN][tT]+{ws}
-type_double 		[dD][oO][uU][bB][lL][eE]+{ws}
+type_double 	[dD][oO][uU][bB][lL][eE]+{ws}
 func_print		[pP][rR][iI][nN][tT]
 w_while 		[wW][hH][iI][lL][eE]
 w_if 			[iI][fF]
 w_else 			[eE][lL][sS][eE]
-ws 	 		[ \t]
+ws 	 			[ \t]
 
 %%
 
@@ -89,7 +89,7 @@ ws 	 		[ \t]
 "\""						{printf("%s \t QUOTATION \n",yytext);}
 "\'"						{printf("%s \t QUOTATION \n",yytext);}
 "^"							{printf("%s \t EXPONETNTIAL \n",yytext);}
-"\""+[.^"\""]*+"\"" 		{printf("%s \t STRING \n",yytext); }
+"\""+[^"\""]*+"\""	 		{printf("%s \t STRING \n",yytext); }
 
 "/*"			{
 					char c;
@@ -140,10 +140,6 @@ int main(int argc,char *argv[]){
 
 	yyin = fopen(argv[1],"r");
 	yylex();
-
-	printf("\n");
-	lookup_symbol("azzzx");
-	lookup_symbol("aaa");
 
 	printf("\nParse over, the line number is %d\n", line);
 	dump_symbol();
