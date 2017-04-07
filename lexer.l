@@ -23,8 +23,8 @@
 */
 	typedef struct SYMBOL_TABLE{
 		int index;
-		char id[100];
-		char type[10];
+		char *id;
+		char *type;
 		struct SYMBOL_TABLE* next;
 	}symbol_table;
 	void create_symbol();
@@ -158,7 +158,6 @@ void create_symbol(){
 	char* temp;
 	temp = strtok(yytext," ");
 	strcpy(type,temp);
-	//printf("type \t%s \n",temp);
 	while(temp != NULL)
 	{
 		temp = strtok (NULL," ");
@@ -215,7 +214,11 @@ void dump_symbol(){
 symbol_table* create_node(char* type, char* id)
 {
 	symbol_table* new = (symbol_table*)malloc(sizeof(symbol_table));
+	//malloc the id mem
+	new->id =(char*)malloc(strlen(id)*sizeof(char));
 	strcpy(new->id,id);
+	//malloc the type mem
+	new->type =(char*)malloc(strlen(type)*sizeof(char));
 	strcpy(new->type,type);
 	new->index = node_index;
 	new->next = NULL;
