@@ -100,43 +100,43 @@ relat 			[><]|[==]|[>=]|[<=]
 								printf("\" \t\n");
 							}
 
-"/*"			{
-					char c;
-					for ( ; ; )
-					{
-						//do nothing
-						while ( (c = input()) != '*' &&	c != EOF );
-						if ( c == '*' )
-						{
-							while ( (c = input()) == '*' );
-							if ( c == '/' )
-							break;
-						}
-						if ( c == EOF )
-						{
-							printf( "EOF in comment" );
-							break;
-						}
-					}
-				}
-"//"			{
-					char c;
-		    		while(c != '\n')
-		    		{
-						while ( (c = input()) != '\n' && c != EOF );
-						if ( c == EOF )
-						{
-							printf( "EOF in comment" );
-							break;
-						}
-					}
-		    	}
+"/*"						{
+								char c;
+								for ( ; ; )
+								{
+									//do nothing
+									while ( (c = input()) != '*' &&	c != EOF );
+									if ( c == '*' )
+									{
+										while ( (c = input()) == '*' );
+										if ( c == '/' )
+										break;
+									}
+									if ( c == EOF )
+									{
+										printf( "EOF in comment" );
+										break;
+									}
+								}
+							}
+"//"						{
+								char c;
+					    		while(c != '\n')
+					    		{
+									while ( (c = input()) != '\n' && c != EOF );
+									if ( c == EOF )
+									{
+										printf( "EOF in comment" );
+										break;
+									}
+								}
+					    	}
 
-{id} 					{printf("%s \t ID \n",yytext); }
-{digit}+				{printf("%s \t NUMBER \n",yytext);}
-{digit}+"."+{digit}		{printf("%s \t FLOATNUMBER \n",yytext);}
-[\n]					{count_line();}
-{ws}					{;}
+{id} 						{printf("%s \t ID \n",yytext); }
+{digit}+					{printf("%s \t NUMBER \n",yytext);}
+{digit}+"."+{digit}			{printf("%s \t FLOATNUMBER \n",yytext);}
+[\n]						{count_line();}
+{ws}						{;}
 
 %%
 
