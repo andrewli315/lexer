@@ -50,45 +50,40 @@
 %}
 
 /*	define regular expression label */
-letter 			[a-zA-Z]
-digit 			[0-9]
-id 				{letter}+({letter}|{digit})*
-type_int		[iI][nN][tT]+{ws}*
-type_double 	[dD][oO][uU][bB][lL][eE]+{ws}*
-func_print		[pP][rR][iI][nN][tT]
-w_while 		[wW][hH][iI][lL][eE]
-w_if 			[iI][fF]
-w_else 			[eE][lL][sS][eE]
-ws 	 			[ \t]
-op 				[+\-*/]
-relat 			[><]|[==]|[>=]|[<=]
+letter                      [a-zA-Z]
+digit                       [0-9]
+id                          {letter}+({letter}|{digit})*
+type_int                    [iI][nN][tT]+{ws}*
+type_double                 [dD][oO][uU][bB][lL][eE]+{ws}*
+func_print                  [pP][rR][iI][nN][tT]
+w_while                     [wW][hH][iI][lL][eE]
+w_if                        [iI][fF]
+w_else                      [eE][lL][sS][eE]
+ws                          [ \t]
+op                          [+\-*/]
+relat                       [><]|[==]|[>=]|[<=]
 
 %%
 
  /*	Rules section */
-{type_int}+{id}				{create_symbol();}
-{type_double}+{id}			{create_symbol();}
-{func_print}				{printf("%s \t PRINT FUNCTION \n",yytext);	/* C action code */	;}
-{w_while}					{printf("%s \t WHILE FUNCTION \n",yytext);}
-{w_if}						{printf("%s \t IF \n",yytext);}
-{w_else}					{printf("%s \t ELSE \n",yytext);}
-{op} 						{printf("%s \t OPERATOR \n",yytext);}
-"=" 						{printf("%s \t ASSIGN \n",yytext);}
-"("							{printf("%s \t LB \n",yytext);}
-")"							{printf("%s \t RB \n",yytext);}
-">"							{printf("%s \t RELATIONAL \n",yytext);}
-"<"							{printf("%s \t RELATIONAL \n",yytext);}
-"<="						{printf("%s \t RELATIONAL \n",yytext);}
-">="						{printf("%s \t RELATIONAL \n",yytext);}
-"!="						{printf("%s \t RELATIONAL \n",yytext);}
-"=="						{printf("%s \t RELATIONAL \n",yytext);}
-";" 						{printf("%s \t SEMICOLON \n",yytext); }
-","							{printf("%s \t COMMA \n",yytext);}
-"{"							{printf("%s \t LCB \n",yytext);}
-"}"							{printf("%s \t RCB \n",yytext);}
-"%"							{printf("%s \t REMAINDER \n",yytext);}
-"^"							{printf("%s \t EXPONETNTIAL \n",yytext);}
-"\""				 		{
+{type_int}+{id}             {create_symbol();}
+{type_double}+{id}          {create_symbol();}
+{func_print}                {printf("%s \t PRINT FUNCTION \n",yytext);	/* C action code */	;}
+{w_while}                   {printf("%s \t WHILE FUNCTION \n",yytext);}
+{w_if}                      {printf("%s \t IF \n",yytext);}
+{w_else}                    {printf("%s \t ELSE \n",yytext);}
+{op}                        {printf("%s \t OPERATOR \n",yytext);}
+"="                         {printf("%s \t ASSIGN \n",yytext);}
+"("                         {printf("%s \t LB \n",yytext);}
+")"                         {printf("%s \t RB \n",yytext);}
+{relat}                     {printf("%s \t RELATIONAL \n",yytext);}
+";"                         {printf("%s \t SEMICOLON \n",yytext); }
+","                         {printf("%s \t COMMA \n",yytext);}
+"{"                         {printf("%s \t LCB \n",yytext);}
+"}"                         {printf("%s \t RCB \n",yytext);}
+"%"                         {printf("%s \t REMAINDER \n",yytext);}
+"^"                         {printf("%s \t EXPONETNTIAL \n",yytext);}
+"\""                        {
 								printf("\" \t QUOTATION\n");
 								char c;
 								while((c =input()) != '\"' && c!= EOF)
@@ -96,11 +91,11 @@ relat 			[><]|[==]|[>=]|[<=]
 									putchar(c);
 								}
 								printf(" \t STRING\n");
-
+								
 								printf("\" \t\n");
 							}
 
-"/*"						{
+"/*"                        {
 								char c;
 								for ( ; ; )
 								{
@@ -119,10 +114,10 @@ relat 			[><]|[==]|[>=]|[<=]
 									}
 								}
 							}
-"//"						{
+"//"                        {
 								char c;
 					    		while(c != '\n')
-					    		{
+						 		{
 									while ( (c = input()) != '\n' && c != EOF );
 									if ( c == EOF )
 									{
@@ -130,13 +125,13 @@ relat 			[><]|[==]|[>=]|[<=]
 										break;
 									}
 								}
-					    	}
+                            }
 
-{id} 						{printf("%s \t ID \n",yytext); }
-{digit}+					{printf("%s \t NUMBER \n",yytext);}
-{digit}+"."+{digit}			{printf("%s \t FLOATNUMBER \n",yytext);}
-[\n]						{count_line();}
-{ws}						{;}
+{id}                        {printf("%s \t ID \n",yytext); }
+{digit}+                    {printf("%s \t NUMBER \n",yytext);}
+{digit}+"."+{digit}         {printf("%s \t FLOATNUMBER \n",yytext);}
+[\n]                        {count_line();}
+{ws}                        {;}
 
 %%
 
