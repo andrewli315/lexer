@@ -96,35 +96,36 @@ relat                       [><]|[==]|[>=]|[<=]
 							}
 
 "/*"                        {
-								char c;
-								for ( ; ; )
+
+                                char c;
+                                for ( ; ; )
 								{
-									//do nothing
-									while ( (c = input()) != '*' &&	c != EOF );
-									if ( c == '*' )
-									{
-										while ( (c = input()) == '*' );
-										if ( c == '/' )
-										break;
-									}
-									if ( c == EOF )
-									{
-										printf( "EOF in comment" );
-										break;
-									}
-								}
-							}
+                                //do nothing
+                                    while ( (c = input()) != '*' &&	c != EOF );
+                                    if ( c == '*' )
+                                    {
+                                        while ( (c = input()) == '*' );
+                                        if ( c == '/' )
+                                        break;
+                                    }
+                                    if ( c == EOF )
+                                    {
+                                        printf( "EOF in comment" );
+                                        break;
+                                    }
+                                }
+                            }
 "//"                        {
-								char c;
-					    		while(c != '\n')
-						 		{
-									while ( (c = input()) != '\n' && c != EOF );
-									if ( c == EOF )
-									{
-										printf( "EOF in comment" );
-										break;
-									}
-								}
+                                char c;
+                                while(c != '\n')
+                                {
+                                    while ( (c = input()) != '\n' && c != EOF );
+                                    if ( c == EOF )
+                                    {
+                                        printf( "EOF in comment" );
+                                        break;
+                                    }
+                                }
                             }
 
 {id}                        {printf("%s \t ID \n",yytext); }
@@ -177,7 +178,7 @@ void create_symbol(){
 	}
 	else
 	{
-		printf("\nRedeclaration of \'%s\'\n\n",pch);
+        printf("\nRedeclaration of \'%s\'\n\n",pch);
 		node_index--;
 		return;
 	}
