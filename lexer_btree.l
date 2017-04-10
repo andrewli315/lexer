@@ -31,7 +31,7 @@
 		struct TNODE* left;
 		struct TNODE* right;
 	}Tnode;
-	symbol* new_symbol (char* id,char* type,int index);
+	symbol* new_symbol (char* id,char* type);
 	Tnode* new_node(symbol* n);
 	void insert_node(Tnode*,symbol*);
 	void dump(Tnode*);
@@ -43,6 +43,7 @@
 	int lookup_symbol(char*);
 	//global variable
 	Tnode* root;
+	symbol *buffer[100];
 	int node_index = 0;
 	int line = 0;
 
@@ -52,13 +53,15 @@
 letter 			[a-zA-Z]
 digit 			[0-9]
 id 				{letter}+({letter}|{digit})*
-type_int		[iI][nN][tT]+{ws}
-type_double 	[dD][oO][uU][bB][lL][eE]+{ws}
+type_int		[iI][nN][tT]+{ws}*
+type_double 	[dD][oO][uU][bB][lL][eE]+{ws}*
 func_print		[pP][rR][iI][nN][tT]
 w_while 		[wW][hH][iI][lL][eE]
 w_if 			[iI][fF]
 w_else 			[eE][lL][sS][eE]
 ws 	 			[ \t]
+op 				[+\-*/]
+relat 			[><]|[==]|[>=]|[<=]
 
 %%
 
@@ -69,11 +72,8 @@ ws 	 			[ \t]
 {w_while}					{printf("%s \t WHILE FUNCTION \n",yytext);}
 {w_if}						{printf("%s \t IF \n",yytext);}
 {w_else}					{printf("%s \t ELSE \n",yytext);}
+{op} 						{printf("%s \t OPERATOR \n",yytext);}
 "=" 						{printf("%s \t ASSIGN \n",yytext);}
-"+" 						{printf("%s \t OPERATOR \n",yytext);}
-"-" 						{printf("%s \t OPERATOR \n",yytext);}
-"*" 						{printf("%s \t OPERATOR \n",yytext);}
-"/" 						{printf("%s \t OPERATOR \n",yytext);}
 "("							{printf("%s \t LB \n",yytext);}
 ")"							{printf("%s \t RB \n",yytext);}
 ">"							{printf("%s \t RELATIONAL \n",yytext);}
@@ -86,10 +86,19 @@ ws 	 			[ \t]
 ","							{printf("%s \t COMMA \n",yytext);}
 "{"							{printf("%s \t LCB \n",yytext);}
 "}"							{printf("%s \t RCB \n",yytext);}
-"\""						{printf("%s \t QUOTATION \n",yytext);}
-"\'"						{printf("%s \t QUOTATION \n",yytext);}
+"%"							{printf("%s \t REMAINDER \n",yytext);}
 "^"							{printf("%s \t EXPONETNTIAL \n",yytext);}
-"\""+[^"\""]*+"\""	 		{printf("%s \t STRING \n",yytext); }
+"\""				 		{
+								printf("\" \t QUOTATION\n");
+								char c;
+								while((c =input()) != '\"' && c!= EOF)
+								{
+									putchar(c);
+								}
+								printf(" \t STRING\n");
+
+								printf("\" \t\n");
+							}
 
 "/*"			{
 					char c;
@@ -136,7 +145,7 @@ ws 	 			[ \t]
 /*	You have to define your C function in this section */
 
 int main(int argc,char *argv[]){
-	root = new_node(new_symbol("","",0));
+	root = new_node(new_symbol("",""));
 
 	yyin = fopen(argv[1],"r");
 	yylex();
@@ -164,10 +173,19 @@ void create_symbol(){
 		strcpy(pch,temp);
 		break;
 	}
-	node = new_symbol(pch,type,index++);
-	printf("%s \t %s TYPE VAR\n", pch,type );
-	printf("Create a symbol table\n");
-	insert_symbol(pch,node);
+	node = new_symbol(pch,type);
+	if(lookup_symbol(pch) == 0)
+	{
+		printf("%s \t %s TYPE VAR\n", pch,type );
+		printf("Create a symbol table\n");
+		insert_symbol(pch,node);
+	}
+	else
+	{
+		printf("\nRedeclaration of \'%s\'\n\n",pch);
+		node_index--;
+		return;
+	}
 }
 
 void insert_symbol(char* s,symbol* node){
@@ -183,8 +201,8 @@ int lookup_symbol(char* sym){
 	{
 		if(strcmp(sym,node->data->id) == 0)
 		{
-			printf("\nLookup symbol:\n");
-			printf("%d \t %s \t %s\n", node->data->index,node->data->id,node->data->type);
+			//printf("\nLookup symbol:\n");
+			//printf("%d \t %s \t %s\n", node->data->index,node->data->id,node->data->type);
 			return node->data->index;
 		}
 		else
@@ -195,22 +213,23 @@ int lookup_symbol(char* sym){
 				node = node->right;
 		}
 	}
-	printf("There is no such symbol\n");
-	return -1;
+	//printf("There is no such symbol\n");
+	return 0;
 }
 
 void dump_symbol(){
 	printf("\nThe symbol table dump:\n");
 	dump(root->right);
 }
-symbol* new_symbol(char* id,char* type,int index)
+symbol* new_symbol(char* id,char* type)
 {
 	symbol* new = (symbol*)malloc(sizeof(symbol));
 	new->id = (char*)malloc(strlen(id)*sizeof(char));
 	strcpy(new->id,id);
 	new->type = (char*)malloc(strlen(type)*sizeof(char));
 	strcpy(new->type,type);
-	new->index = index;
+	new->index = node_index;
+	node_index++;
 	return new;
 
 }
@@ -226,6 +245,8 @@ Tnode* new_node(symbol* n)
 	new->data->index = n->index;
 	new->left = NULL;
 	new->right = NULL;
+	
+	buffer[n->index] = n;
 	return new;
 }
 void insert_node(Tnode* t,symbol* n)
@@ -253,14 +274,12 @@ void insert_node(Tnode* t,symbol* n)
 }
 void dump(Tnode* node)
 {
-	if(node != NULL)
+	int i;
+	for(i=1;i<node_index;i++)
 	{
-		printf("%d \t %s \t %s\n",node->data->index,node->data->id,node->data->type);
-		dump(node->right);
-		dump(node->left);		
+		printf("%d \t %s \t %s\n",buffer[i]->index,buffer[i]->id,buffer[i]->type);
 	}
-	else
-		return;
+	
 }
 int weight(char* str1,char* str2)
 {
