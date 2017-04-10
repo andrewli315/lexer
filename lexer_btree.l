@@ -84,16 +84,15 @@ relat                       [><]|[==]|[>=]|[<=]
 "%"                         {printf("%s \t REMAINDER \n",yytext);}
 "^"                         {printf("%s \t EXPONETNTIAL \n",yytext);}
 "\""                        {
-								printf("\" \t QUOTATION\n");
-								char c;
-								while((c =input()) != '\"' && c!= EOF)
-								{
-									putchar(c);
-								}
-								printf(" \t STRING\n");
-								
-								printf("\" \t\n");
-							}
+                                printf("\" \t QUOTATION\n");
+                                char c;
+                                while((c =input()) != '\"' && c!= EOF)
+                                {
+                                    putchar(c);
+                                }
+                                printf(" \t STRING\n");
+                                printf("\" \t\n");
+                            }
 
 "/*"                        {
 
