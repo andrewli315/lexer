@@ -61,7 +61,7 @@ w_if                        [iI][fF]
 w_else                      [eE][lL][sS][eE]
 ws                          [ \t]
 op                          [+\-*/]
-relat                       [><]|[==]|[>=]|[<=]
+relat                       [>](1)|[<](1)|[==](1)|[>=](1)|[<=](1)|[!=](1)
 
 %%
 
@@ -83,6 +83,7 @@ relat                       [><]|[==]|[>=]|[<=]
 "}"                         {printf("%s \t RCB \n",yytext);}
 "%"                         {printf("%s \t REMAINDER \n",yytext);}
 "^"                         {printf("%s \t EXPONETNTIAL \n",yytext);}
+[.]                         {yytext=NULL;}
 "\""                        {
                                 printf("\" \t QUOTATION\n");
                                 char c;
@@ -99,13 +100,18 @@ relat                       [><]|[==]|[>=]|[<=]
                                 char c;
                                 for ( ; ; )
                                 {
-                                //do nothing
-                                    while ( (c = input()) != '*' && c != EOF );
+                                    while ( (c = input()) != '*' && c != EOF )
+                                        putchar(c);
                                     if ( c == '*' )
                                     {
-                                        while ( (c = input()) == '*' );
+                                        while ( (c = input()) == '*' )
+                                            putchar(c);
                                         if ( c == '/' )
-                                        break;
+                                        {
+                                            putchar(c);
+                                            printf(" \t COMMENT\n");
+                                            break;
+                                        }
                                     }
                                     if ( c == EOF )
                                     {
@@ -116,15 +122,18 @@ relat                       [><]|[==]|[>=]|[<=]
                             }
 "//"                        {
                                 char c;
+                                printf("%s",yytext);
                                 while(c != '\n')
                                 {
-                                    while ( (c = input()) != '\n' && c != EOF );
+                                    while ( (c = input()) != '\n' && c != EOF )
+                                        printf("%c",c);
                                     if ( c == EOF )
                                     {
                                         printf( "EOF in comment" );
                                         break;
                                     }
                                 }
+                                printf(" \t COMMENT\n");
                             }
 
 {id}                        {printf("%s \t ID \n",yytext); }
