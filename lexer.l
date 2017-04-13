@@ -77,6 +77,7 @@ relat                       [><]|[==]|[>=]|[<=]
 "}"                         {printf("%s \t RCB \n",yytext);}
 "%"                         {printf("%s \t REMAINDER \n",yytext);}
 "^"                         {printf("%s \t EXPONETNTIAL \n",yytext);}
+[.]                         {;}
 "\""                {
                         printf("\" \t QUOTATION\n");
                         char c;
