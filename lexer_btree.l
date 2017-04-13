@@ -98,14 +98,24 @@ relat                       [>](1)|[<](1)|[==](1)|[>=](1)|[<=](1)|[!=](1)
 "/*"                        {
 
                                 char c;
+                                printf("%s",yytext);
                                 for ( ; ; )
                                 {
                                     while ( (c = input()) != '*' && c != EOF )
+                                    {
+                                        if(c == '\n')
+                                            count_line();
+                                        if((int)c >= 32 || c=='\n')
                                         putchar(c);
+
+                                    }
                                     if ( c == '*' )
                                     {
+                                        putchar(c);
                                         while ( (c = input()) == '*' )
-                                            putchar(c);
+                                        {
+                                            printf("*");
+                                        }
                                         if ( c == '/' )
                                         {
                                             putchar(c);
@@ -121,18 +131,22 @@ relat                       [>](1)|[<](1)|[==](1)|[>=](1)|[<=](1)|[!=](1)
                                 }
                             }
 "//"                        {
-                                char c;
+                                char c = '\0';
                                 printf("%s",yytext);
                                 while(c != '\n')
                                 {
                                     while ( (c = input()) != '\n' && c != EOF )
-                                        printf("%c",c);
+                                    {
+                                        if((int)c >= 32)
+                                            putchar(c);
+                                    }
                                     if ( c == EOF )
                                     {
                                         printf( "EOF in comment" );
                                         break;
                                     }
                                 }
+                                count_line();
                                 printf(" \t COMMENT\n");
                             }
 

@@ -88,43 +88,61 @@ relat                       [><]|[==]|[>=]|[<=]
                         printf("\" \t\n");
                     }
 
-"/*"                {
-                        char c;
-                        for ( ; ; )
-                        {
-                            //do nothing
-                            while ( (c = input()) != '*' && c != EOF );
-                            if ( c == '*' )
-                            {
+"/*"                        {
 
-                                while ( (c = input()) == '*' );
-                                if ( c == '/' )
-                                break;
-                            }
-                            if ( c == EOF )
-                            {
-                                printf( "EOF in comment" );
-                                break;
-                            }
-                        }
-                    }
-"//"                {
-                        char c;
+                                char c;
+                                printf("%s",yytext);
+                                for ( ; ; )
+                                {
+                                    while ( (c = input()) != '*' && c != EOF )
+                                    {
+                                        if(c == '\n')
+                                            count_line();
+                                        if((int)c >= 32 || c=='\n')
+                                        putchar(c);
 
-                        for ( ; ; )
-                        {
-                            while ( (c = input()) != '\n' && c != EOF )
-                            ;      /* eat up text of comment */
-                            if(c == '\n')
-                                break;
-                            if ( c == EOF )
-                            {
-                                printf( "EOF in comment" );
-                                break;
+                                    }
+                                    if ( c == '*' )
+                                    {
+                                        putchar(c);
+                                        while ( (c = input()) == '*' )
+                                        {
+                                            printf("*");
+                                        }
+                                        if ( c == '/' )
+                                        {
+                                            putchar(c);
+                                            printf(" \t COMMENT\n");
+                                            break;
+                                        }
+                                    }
+                                    if ( c == EOF )
+                                    {
+                                        printf( "EOF in comment" );
+                                        break;
+                                    }
+                                }
                             }
-                        }
-                    }
-
+"//"                        {
+                                char c = '\0';
+                                printf("%s",yytext);
+                                while(c != '\n')
+                                {
+                                    while ( (c = input()) != '\n' && c != EOF )
+                                    {
+                                        if((int)c >= 32)
+                                            putchar(c);
+                                    }
+                                    if ( c == EOF )
+                                    {
+                                        printf( "EOF in comment" );
+                                        break;
+                                    }
+                                }
+                                count_line();
+                                printf(" \t COMMENT\n");
+                            }
+                            
 {id}                {printf("%s \t ID \n",yytext); }
 {digit}+            {printf("%s \t NUMBER \n",yytext);}
 {digit}+"."+{digit} {printf("%s \t FLOATNUMBER \n",yytext);}
