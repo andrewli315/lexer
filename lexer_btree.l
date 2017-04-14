@@ -48,7 +48,6 @@
     int line = 0;
 
 %}
-
 /*  define regular expression label */
 letter                      [a-zA-Z]
 digit                       [0-9]
@@ -62,7 +61,6 @@ w_else                      [eE][lL][sS][eE]
 ws                          [ \t]
 op                          [+\-*/]
 relat                       [>](1)|[<](1)|[==](1)|[>=](1)|[<=](1)|[!=](1)
-
 %%
 
  /* Rules section */
@@ -83,7 +81,6 @@ relat                       [>](1)|[<](1)|[==](1)|[>=](1)|[<=](1)|[!=](1)
 "}"                         {printf("%s \t RCB \n",yytext);}
 "%"                         {printf("%s \t REMAINDER \n",yytext);}
 "^"                         {printf("%s \t EXPONETNTIAL \n",yytext);}
-[.]                         {;}                         
 "\""                        {
                                 printf("\" \t QUOTATION\n");
                                 char c;
@@ -155,9 +152,9 @@ relat                       [>](1)|[<](1)|[==](1)|[>=](1)|[<=](1)|[!=](1)
 {digit}+"."+{digit}         {printf("%s \t FLOATNUMBER \n",yytext);}
 [\n]                        {count_line();}
 {ws}                        {;}
+.                           ;
 
 %%
-
 /*  C Code section */
 
 /*  You have to define your C function in this section */

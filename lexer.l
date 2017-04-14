@@ -77,7 +77,6 @@ relat                       [><]|[==]|[>=]|[<=]
 "}"                         {printf("%s \t RCB \n",yytext);}
 "%"                         {printf("%s \t REMAINDER \n",yytext);}
 "^"                         {printf("%s \t EXPONETNTIAL \n",yytext);}
-[.]                         {;}
 "\""                {
                         printf("\" \t QUOTATION\n");
                         char c;
@@ -149,7 +148,7 @@ relat                       [><]|[==]|[>=]|[<=]
 {digit}+"."+{digit} {printf("%s \t FLOATNUMBER \n",yytext);}
 [\n]                {count_line();}
 {ws}                {;}
-
+.                   ;
 %%
 
 /*  C Code section */
